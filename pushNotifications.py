@@ -62,40 +62,46 @@ class AndroidPushNotifications:
 class IOSPushNotifications:
     """
     Constructor with two arguments.
-    certificate_filepath: the certificate filepath (i.e. "certificates/MyAppCert.pem")
-    privatekey_filepath: the private key filepath (i.e. "certificates/MyAppKey.pem")
+    certificate_filepath: the certificate filepath (e.g. "certificates/MyAppCert.pem")
+    privatekey_filepath: the private key filepath (e.g. "certificates/MyAppKey.pem")
+
     """
-    def __init__(self,privatekey_filepath=None,certificate_filepath=None):
+    def __init__(self,privatekey_filepath=None,certificate_filepath=None,sandbox=False):
         self.__private_key = ""
-        self.__public_cert = ""
+        self.__certificate = ""
+        self.__sandbox = sandbox
 
         if privatekey_filepath and certificate_filepath:
             privatekey_file = os.path.join(os.path.dirname(__file__), privatekey_filepath)
             certificate_file = os.path.join(os.path.dirname(__file__), certificate_filepath)
 
             if os.path.isfile(privatekey_file) and os.path.isfile(certificate_file):
-                self.__privatekey = privatekey_file
+                self.__private_key = privatekey_file
                 self.__certificate = certificate_file
 
 
     def send_push_notification(self,**kwargs):
         try:
+            print self.__sandbox
             if not len(kwargs):
-                raise Exception("Message and token must be given")
+                raise Exception("Message and token device must be given")
             if "message" not in kwargs:
                 raise Exception("Message not found")
             if "token_device" not in kwargs:
                 raise Exception("Token device not found")
 
-            if not self.__privatekey:
+            if not self.__private_key:
                 raise Exception("Private key file not found")
             if not self.__certificate:
                 raise Exception("Certificate file not found")
 
-            apnHost = "gateway.push.apple.com"
+            if self.__sandbox:
+                apnHost = "gateway.sandbox.push.apple.com"
+            else:
+                apnHost = "gateway.push.apple.com"
             ctx=SSL.Context(SSL.SSLv3_METHOD)
             ctx.use_certificate_file(self.__certificate)
-            ctx.use_privatekey_file(self.__privatekey)
+            ctx.use_privatekey_file(self.__private_key)
 
             payload = {}
             aps = {}
