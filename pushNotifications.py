@@ -82,7 +82,6 @@ class IOSPushNotifications:
 
     def send_push_notification(self,**kwargs):
         try:
-            print self.__sandbox
             if not len(kwargs):
                 raise Exception("Message and token device must be given")
             if "message" not in kwargs:
