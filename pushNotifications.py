@@ -2,7 +2,7 @@
 
 Developed by Pablo G. Thuillier
 @pablogthuillier
-https://github.com/pgonzalezt
+https://github.com/pablogthuillier
 
 
 For using this library you can write lines like these:
